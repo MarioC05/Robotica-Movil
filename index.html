@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <center><title>Robótica Móvil</title></center>
+    <title><center>Robótica Móvil</center></title>
 </head>
 <body>
     <h1>Robótica Móvil</h1>
@@ -20,6 +20,46 @@
     <p>
         En esta práctica, debemos programar la aspiradora para que se mueva por la casa aspirando el mayor porcentaje de suelo posible. Para ello, no tenemos acceso a datos como el mapa de la casa,
         solo a los sensores de la propia aspiradora. Por lo tanto, tendremos que implementar un algoritmo de cobertura pseudoaleatorio.
+    </p>
+    <h3>Solución propuesta</h3>
+    <p>
+        El algoritmo de exploración aleatoria que he acabado implementando consiste en una maquina de estados, la cual permite al robot evitar obstaculos para poder llegar a todos los puntos de la casa
+        sin quedarse atascado en ningún momento. Aquí hay un resumen de la funcionalidad de cada estado:
+    </p>  
+    <p>
+        <b>-SPIRAL</b>: Es el estado en el cual comienza el robot. En el se le asigna una velocidad lineal y angular fija, para que siga una trayectoria circular. Cuanto más tiempo pase en este estado,
+        más se reducirá la velocidad angular, aumentando el radio del circulo progresivamente, creando así una trayectoria en espiral, y finalmente yendo en linea recta. Hacemos esto para poder aspirar 
+        espacios abiertos de una manera más eficente, dejando el menor número de huecos posibles. Este estado solo pasará al estado BACKWARD sí el laser detecta un obstáculo.
+    </p>  
+    <p>
+        <b>-BACKWARD</b>: En este estado se llega al detectar un obstáculo y el robot retrocedera una distancia fija para evitar dicho obstáculo. Cuando termine esta operación, pasará directamente al paso SPIN.
+    </p>  
+    <p>
+        <b>-SPIN</b>: Una vez nos hemos alejado del obstaculo, giraremos el robot sobre si mismo un ángulo aleatorio y hacía un lado tambien aleatorio. Esto sirve tanto para evitar el obstaculo que hemos detectado antes
+        como para asegurar que se puede llegar a todas las partes de la casa (si ejecutamos elalgoritmo durante suficiente tiempo).
+    </p>  
+    <p>
+        <b>-FORWARD</b>: una vez terminamos el giro, pasamos a este estado, en el cual avanzaremos un distancia aleatoria hacia delante. Si encontramos un obstaculo mientras realizamos esta acción, volveremos 
+        al estado BACKWARD. En cambio, si avanzamos la distancia especificada sin interrupciones, supondremos que estamos en un espacio suficientemente abierto para poder pasar al estado SPIRAL de nuevo.
+    </p>  
+    <p>
+        Además de los diferentes estados, hay varias decisiones de diseño del código que me gustaría comentar. La primera de ellas es la sensibilidad de la detección de obstaculos. El laser detecta objetos
+        en un rango de 180º delante de la aspirado, y plantea la cuestión de dónde debe encontrarse un objeto para que se considere obstáculo. Si el rnago es muy bajo, puede chocarse con muebles o incluso quedarse
+        atrapado, pero si el rango es muy alto, el robot puede parase frente a objetos cuando realmente no hay ningún peligro o incluso no poder aspirar por sitios demasiado estrechos. En mi caso, he decidio optar
+        por un rango un poco más bajo de lo normal, pues me parece que no poder llegar a ciertos puntos es más grave a que pierda eficiencia a la hora de evitar obstáculos. Aún así, me he preocupado de que
+        no sea demasiado bajo como para quedarse atascado, que tambien sería un fallo grave. La otra decisión de diseño que me parecio importante mencionar es hasta que punto aleatorizar el funcionamiento. En mi caso
+        he hecho que en el estado SPIN pueda girar desde 0.5 hasta 3.14 radianes y que en el estado FORWARD avance hasta desde 1 hasta 6 metros. Esto es un margen de aleatoriedad muy grande, y lo he programado
+        de esta manera pues así se minimiza la posibilidad de que el robot aspire muchas veces por el mismo sitio.
+    </p>
+    <h3>Video</h3>
+    <video controls width="800">
+        <source src="Videos/vacuum.mp4" type="video/mp4">
+        Tu navegador no puede reproducir este vídeo.
+    </video>
+    <h2 id="practica2">P2. Visual Follow Line</h2>
+    <h3>Objetivos</h3>
+    <p>
+        
     </p>
     <h3>Solución propuesta</h3>
     <p>
