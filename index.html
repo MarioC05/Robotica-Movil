@@ -13,6 +13,7 @@
     <ul>
         <li><a href="#practica1">P1. Basic Vacuum Cleaner</a></li>
         <li><a href="#practica2">P2. Visual Follow Line</a></li>
+        <li><a href="#practica3">P3. Obstacle Avoidance</a></li>
     </ul>
     
     <h2 id="practica1">P1. Basic Vacuum Cleaner</h2>
@@ -93,6 +94,48 @@
     <h3>Video</h3>
     <video controls width="800">
         <source src="Videos/F1_line.mp4" type="video/mp4">
+        Tu navegador no puede reproducir este vídeo.
+    </video>
+    <p>(Aqui la simulación va más lenta por el programa de captura de video, pero en el sim time se puede ver que tarda alrededor de 40 segundos en dar una vuelta)</p>
+    <h2 id="practica3">P3. Obstacle Avoidance</h2>
+    <h3>Objetivos</h3>
+    <p>
+        En esta práctica debemos programar un coche de F1 en un cicuito similar al anterior, pero en vez de recorrerlo usando el sensor de la cámara, usaremos el laser. Con él, genraremos vectores de atracción
+        y repulsión para seguir el recorrido siguiendo la orientación de las paredes, además de evitar los obstaculos que pueda haber por el camino.
+    </p>
+    <h3>Solución propuesta</h3>
+    <p>
+        Para que implementar reste algoritmo, debemos definir tres vectores diferentes, uno atractivo, otro repulsivo y uno que sea una media de los otros dos, que será el encargado de definir la velocidad final. 
+        Ahora explicaremos más en detalle como se cálcula cada vector.
+    </p>  
+    <p>
+        <b>-ATRACTOR</b>: Este vector apunta a varias posiciones "target" que definen aproximadamente la forma del circuito. El coche solo se fija en la más cercana a él, y pasa a la siguiente cuando supere el target
+        actual. Como estas posiciones están en función del mapa, tenemos que convertirlas a coordenadas respecto al coche. Como no nos interesa la próximidad del target (pues solo es un punto de paso) y solo nos queremos
+        fijar en la orientación, usamos operaciones trigonométricas para fijar la longitud del vector a un valor constante, y que solo cambie el ángulo. De esta manera tambien será más fácil fijar los valores de los
+        demás vectores para que el coche no vaya ni muy despacio ni muy rápido.
+    </p>  
+    <p>
+        <b>-REPULSOR</b>: Los obstáculos y las paredes del circuito los detectamos con un laser que calcula la distancia de objetos en 180º delante del coche. Para generar el vector repulsor, calculamos la media de 
+        todas las distancias detectadas y invertimos la dirección, ya que queremos alejarnos de estos obstáculos. Por supuesto, no todas las direcciones son iguales. Por ello, cada ángulo del laser tiene un valor de
+        importancia que fijamos nosotros dependiendo de cuan cerca del frente del coche está. Ese valor de importancia nos indica como de cerca del coche tiene que estar el obstáculo para empezar a considerarlo y en que
+        proporción módifica el vector. De esta manera, evitamos con más eficiencia obstáculos con los que hay riesgo de chocarse y no a los que nos pasen por el lado. Adicionalmente, añadimos constantes proporcionales
+        a los componentes de x e y del vector para que no frene demasiado al evitar obstáculos.
+    </p>  
+    <p>
+        <b>-MEDIA</b>: Cuando tenemos calculados los demás vectores, simplemente tenemos que hacer una media para calcular este último vector. No hace falta añadir componentes proporcionales, pues ya hemos realizado
+        esos cálculos previamente. Una vez tenemos el vector promedio, establecemos las velocidades lineales y angulares dependiendo de la lóngitud y orientación del vector. Tambien añadimos velocidades máximas y minimas
+        para que el coche no descarrile pero tampoco frene por completo en ningún momento
+    </p>  
+    <p>
+        La mayoria de valores de las constantes que hemos elegido para esta práctica han sido gracias al prueba y error en la simulación, pero hay algunas que me parece importante destacar. La distancia a la que
+        empezamos a considerar obstáculos con el laser a los laterales del coche coincide más o menos con la separación entre las paredes del circuito con el centro de la carretera. De esta manera, el coche va recto y
+        no oscila mientras no haya curvas en la carretera. Tambien es importante definir que consideramos "superar" un target. Aunque inicialmente lo habiamos implementado con que el coche tendría que acercarse a menos de
+        0.4 del radio del target, muchas veces el coche acababa pasando de largo. Para solucionarlo, hemos modificado la condición a que simplemente lo supere en el eje X, pues es el vector repulsivo el que se encarga
+        principalmente de que el coche vaya por el centro del circuito.
+    </p>
+    <h3>Video</h3>
+    <video controls width="800">
+        <source src="Videos/obstacle.mp4" type="video/mp4">
         Tu navegador no puede reproducir este vídeo.
     </video>
 </body>
